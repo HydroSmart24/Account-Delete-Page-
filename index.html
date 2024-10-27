@@ -129,6 +129,8 @@
                 message: `I want to delete my account because: ${reason}`
             };
 
+            console.log("Template Parameters:", templateParams); // Log the template parameters
+
             emailjs.send("service_x1zhnpe", "template_gafjofd", templateParams)
                 .then(function(response) {
                     console.log("Email sent successfully!", response.status, response.text);
