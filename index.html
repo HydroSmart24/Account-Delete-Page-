@@ -86,6 +86,31 @@
     </div>
 
     <script>
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.slice(1);
+            const queryArray = queryString.split("&");
+            for (const param of queryArray) {
+                const [key, value] = param.split("=");
+                if (key && value) {
+                    params[decodeURIComponent(key)] = decodeURIComponent(value.replace(/\+/g, " "));
+                }
+            }
+            return params;
+        }
+
+        // Pre-fill input fields with URL parameters
+        window.onload = function() {
+            const params = getQueryParams();
+            if (params.username) {
+                document.getElementById("name").value = params.username;
+            }
+            if (params.email) {
+                document.getElementById("email").value = params.email;
+            }
+        };
+
         // Initialize EmailJS
         (function() {
             emailjs.init("YQ2FTTWe44qGkS655"); // Replace with your EmailJS User ID
