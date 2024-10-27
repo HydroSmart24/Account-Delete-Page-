@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Deletion Request</title>
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,7 +79,7 @@
         <p id="response-message" class="hidden"></p>
     </div>
 
-    <script>
+    <script type="text/javascript">
         // Initialize EmailJS
         (function() {
             emailjs.init("YQ2FTTWe44qGkS655"); // Replace with your EmailJS User ID
