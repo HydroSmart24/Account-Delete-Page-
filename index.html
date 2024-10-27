@@ -12,7 +12,6 @@
             margin: 0;
             padding: 20px;
         }
-
         .container {
             max-width: 600px;
             margin: 40px auto;
@@ -21,17 +20,14 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             text-align: center;
             color: red;
         }
-
         label {
             display: block;
             margin-bottom: 5px;
         }
-
         input[type="text"],
         input[type="email"],
         textarea {
@@ -41,7 +37,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         button {
             width: 100%;
             padding: 10px;
@@ -52,16 +47,13 @@
             font-size: 16px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #0e6f94;
         }
-
         #response-message {
             margin-top: 10px;
             text-align: center;
         }
-
         .hidden {
             display: none;
         }
@@ -86,36 +78,12 @@
     </div>
 
     <script>
-        // Function to get query parameters from the URL
-        function getQueryParams() {
-            const params = {};
-            const queryString = window.location.search.slice(1);
-            const queryArray = queryString.split("&");
-            for (const param of queryArray) {
-                const [key, value] = param.split("=");
-                if (key && value) {
-                    params[decodeURIComponent(key)] = decodeURIComponent(value.replace(/\+/g, " "));
-                }
-            }
-            return params;
-        }
-
-        // Pre-fill input fields with URL parameters
-        window.onload = function() {
-            const params = getQueryParams();
-            if (params.username) {
-                document.getElementById("name").value = params.username;
-            }
-            if (params.email) {
-                document.getElementById("email").value = params.email;
-            }
-        };
-
         // Initialize EmailJS
         (function() {
             emailjs.init("YQ2FTTWe44qGkS655"); // Replace with your EmailJS User ID
         })();
 
+        // Handle form submission
         document.getElementById("deletion-form").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -129,22 +97,59 @@
                 message: `I want to delete my account because: ${reason}`
             };
 
-            console.log("Template Parameters:", templateParams); // Log the template parameters
-
+            // Send email using EmailJS SDK
             emailjs.send("service_x1zhnpe", "template_gafjofd", templateParams)
                 .then(function(response) {
                     console.log("Email sent successfully!", response.status, response.text);
-                    alert("Your request has been submitted successfully!"); // Alert for success
-                    document.getElementById("response-message").innerText = "Your request has been submitted successfully!";
-                    document.getElementById("response-message").classList.remove("hidden");
-                    document.getElementById("deletion-form").reset();
-                }, function(error) {
-                    console.error("Failed to send email. Error:", error);
-                    alert("There was an error submitting your request. Please try again."); // Alert for error
-                    document.getElementById("response-message").innerText = "There was an error submitting your request. Please try again.";
-                    document.getElementById("response-message").classList.remove("hidden");
+                    showSuccessMessage();
+                })
+                .catch(function(error) {
+                    console.error("Failed to send email via SDK. Trying direct API call.", error);
+                    sendEmailDirectly(name, email, reason); // Fallback to direct API call
                 });
         });
+
+        // Fallback function to use EmailJS REST API
+        function sendEmailDirectly(name, email, reason) {
+            fetch("https://api.emailjs.com/api/v1.0/email/send", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    service_id: "service_x1zhnpe",
+                    template_id: "template_gafjofd",
+                    user_id: "YQ2FTTWe44qGkS655", // Replace with your EmailJS User ID
+                    template_params: {
+                        name: name,
+                        email: email,
+                        message: `I want to delete my account because: ${reason}`
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Email sent successfully via direct API!", data);
+                showSuccessMessage();
+            })
+            .catch(error => {
+                console.error("Failed to send email via direct API. Error:", error);
+                showErrorMessage();
+            });
+        }
+
+        function showSuccessMessage() {
+            alert("Your request has been submitted successfully!");
+            document.getElementById("response-message").innerText = "Your request has been submitted successfully!";
+            document.getElementById("response-message").classList.remove("hidden");
+            document.getElementById("deletion-form").reset();
+        }
+
+        function showErrorMessage() {
+            alert("There was an error submitting your request. Please try again.");
+            document.getElementById("response-message").innerText = "There was an error submitting your request. Please try again.";
+            document.getElementById("response-message").classList.remove("hidden");
+        }
     </script>
 </body>
 </html>
