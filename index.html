@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletion Request</title>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: red;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1089B8;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0e6f94;
+        }
+
+        #response-message {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Request Account Deletion</h1>
+        <form id="deletion-form">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="reason">Reason for Deletion:</label>
+            <textarea id="reason" name="reason" rows="4" required></textarea>
+            
+            <button type="submit">Submit Request</button>
+        </form>
+        <p id="response-message" class="hidden"></p>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("YQ2FTTWe44qGkS655"); // Replace with your EmailJS User ID
+        })();
+
+        document.getElementById("deletion-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const reason = document.getElementById("reason").value;
+
+            const templateParams = {
+                name: name,
+                email: email,
+                message: `I want to delete my account because: ${reason}`
+            };
+
+            emailjs.send("service_vivs74j", "template_gafjofd", templateParams)
+                .then(function(response) {
+                    console.log("Email sent successfully!", response.status, response.text);
+                    alert("Your request has been submitted successfully!"); // Alert for success
+                    document.getElementById("response-message").innerText = "Your request has been submitted successfully!";
+                    document.getElementById("response-message").classList.remove("hidden");
+                    document.getElementById("deletion-form").reset();
+                }, function(error) {
+                    console.error("Failed to send email. Error:", error);
+                    alert("There was an error submitting your request. Please try again."); // Alert for error
+                    document.getElementById("response-message").innerText = "There was an error submitting your request. Please try again.";
+                    document.getElementById("response-message").classList.remove("hidden");
+                });
+        });
+    </script>
+</body>
+</html>
